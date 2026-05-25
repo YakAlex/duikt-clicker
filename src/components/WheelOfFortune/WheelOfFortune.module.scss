@@ -1,0 +1,150 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fade-in 0.2s ease;
+}
+
+.modal {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 0 60px var(--accent-glow), 0 0 120px var(--primary-glow);
+  max-width: 420px;
+  width: 95vw;
+  animation: fade-in 0.3s ease;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 18px;
+  transition: color var(--transition);
+  font-family: inherit;
+
+  &:hover:not(:disabled) { color: var(--danger); }
+  &:disabled { opacity: 0.3; cursor: not-allowed; }
+}
+
+.title {
+  font-family: var(--font-hud);
+  font-size: 18px;
+  color: var(--primary);
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 16px var(--primary-glow);
+}
+
+.sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-top: -8px;
+}
+
+.wheelWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fixed indicator arrow pointing down at the wheel top */
+.arrow {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 22px solid var(--warning);
+  z-index: 2;
+  filter: drop-shadow(0 0 6px var(--warning-glow));
+}
+
+.svg {
+  border-radius: 50%;
+  box-shadow: 0 0 30px var(--primary-glow), 0 0 60px var(--accent-glow);
+  display: block;
+}
+
+/* Spin button */
+.spinBtn {
+  padding: 14px 48px;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border-radius: var(--radius);
+  font-family: var(--font-hud);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--bg);
+  letter-spacing: 0.12em;
+  box-shadow: 0 0 20px var(--primary-glow);
+  transition: all var(--transition);
+
+  &:hover:not(:disabled) {
+    transform: scale(1.06);
+    box-shadow: 0 0 36px var(--primary-glow);
+  }
+}
+
+.spinning {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Result reveal */
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: achievement-pop 0.4s ease;
+}
+
+.resultLabel {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+.resultValue {
+  font-family: var(--font-hud);
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 20px currentColor;
+}
+
+.claimBtn {
+  padding: 12px 40px;
+  background: linear-gradient(135deg, var(--success), var(--accent));
+  border-radius: var(--radius);
+  font-family: var(--font-hud);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg);
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 20px var(--success-glow);
+  transition: all var(--transition);
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 32px var(--success-glow);
+  }
+}

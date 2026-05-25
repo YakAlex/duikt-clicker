@@ -1,0 +1,147 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+}
+
+.sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: -6px;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// ── Skin card ─────────────────────────────────────────────────────────────────
+.card {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  transition: all var(--transition);
+}
+
+.unlocked {
+  &:hover {
+    border-color: var(--skin-primary, var(--primary));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--skin-primary, var(--primary)) 30%, transparent);
+  }
+}
+
+.locked {
+  opacity: 0.55;
+  filter: saturate(0.3);
+}
+
+.active {
+  border-color: var(--skin-primary, var(--primary)) !important;
+  box-shadow: 0 0 20px color-mix(in srgb, var(--skin-primary, var(--primary)) 40%, transparent) !important;
+}
+
+// ── Swatch ────────────────────────────────────────────────────────────────────
+.swatch {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius);
+  border: 2px solid;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.swatchDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+// ── Info ──────────────────────────────────────────────────────────────────────
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.skinIcon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.skinName {
+  font-family: var(--font-hud);
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 0.06em;
+}
+
+.skinDesc {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress {
+  font-size: 10px;
+  color: var(--warning);
+  margin-top: 2px;
+}
+
+// ── Buttons / badges ──────────────────────────────────────────────────────────
+.equipBtn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  border-radius: var(--radius);
+  font-family: var(--font-hud);
+  font-size: 11px;
+  color: var(--bg);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  box-shadow: 0 0 10px var(--primary-glow);
+  transition: all var(--transition);
+
+  &:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 18px var(--primary-glow);
+  }
+}
+
+.equippedBadge {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--success);
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--success-glow);
+}
+
+.lockBadge {
+  font-size: 10px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  max-width: 100px;
+  text-align: right;
+  line-height: 1.4;
+}

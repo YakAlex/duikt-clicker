@@ -1,0 +1,168 @@
+/* ── Skin CSS Variables (default theme) ── */
+:root {
+  --primary: #00d4ff;
+  --primary-dark: #0099bb;
+  --primary-glow: rgba(0, 212, 255, 0.3);
+  --secondary: #ff6b35;
+  --secondary-glow: rgba(255, 107, 53, 0.3);
+  --accent: #a855f7;
+  --accent-glow: rgba(168, 85, 247, 0.3);
+  --bg: #020b18;
+  --bg-card: #061224;
+  --bg-card-alt: #0a1e35;
+  --text: #e2f4ff;
+  --text-muted: #4a7a99;
+  --text-dim: #2a4a66;
+  --success: #22d47a;
+  --success-glow: rgba(34, 212, 122, 0.3);
+  --danger: #ff3a5c;
+  --danger-glow: rgba(255, 58, 92, 0.3);
+  --warning: #ffb800;
+  --warning-glow: rgba(255, 184, 0, 0.3);
+  --border: #0d2840;
+  --border-bright: #1a4060;
+  --gold: #ffd700;
+  --gold-glow: rgba(255, 215, 0, 0.3);
+  --scan-line: rgba(0, 212, 255, 0.03);
+  --font-hud: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --transition: 0.2s ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  
+  /* Subtle scan-line texture */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      var(--scan-line) 0px,
+      var(--scan-line) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  background-attachment: fixed;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* ── Base utility classes ── */
+.glow-text {
+  text-shadow: 0 0 10px currentColor;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: var(--font-hud);
+}
+
+/* ── Keyframe animations ── */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 var(--primary-glow); }
+  70% { box-shadow: 0 0 0 16px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes float-credit {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes slide-out-right {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink-danger {
+  0%, 100% { border-color: var(--danger); }
+  50%       { border-color: transparent; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes achievement-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.1); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes glitch {
+  0%   { clip-path: inset(0 0 90% 0); transform: translate(-2px); }
+  20%  { clip-path: inset(30% 0 50% 0); transform: translate(2px); }
+  40%  { clip-path: inset(60% 0 20% 0); transform: translate(-1px); }
+  60%  { clip-path: inset(80% 0 5% 0); transform: translate(1px); }
+  80%  { clip-path: inset(10% 0 70% 0); transform: translate(-2px); }
+  100% { clip-path: inset(0 0 90% 0); transform: translate(0); }
+}
+
+@keyframes scanlines-move {
+  from { background-position: 0 0; }
+  to { background-position: 0 100%; }
+}
+
+@keyframes wheel-spin {
+  from { transform: rotate(var(--start-deg)); }
+  to   { transform: rotate(var(--end-deg)); }
+}
+
+@keyframes prestige-flash {
+  0%   { opacity: 0; transform: scale(0.5); }
+  50%  { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(2); }
+}
