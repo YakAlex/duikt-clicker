@@ -1,31 +1,35 @@
-import { get, set, del } from 'idb-keyval';
-
 const SAVE_KEY = 'duikt-clicker-v1';
 
-export const saveGame = async (state) => {
+const STRIP = [
+  'notifications',
+  '_lastClickPos', '_lastClickValue', '_lastClickCrit',
+];
+
+export const saveGame = (state) => {
   try {
-    // Strip transient fields before saving
-    const { notifications, ...toSave } = state;
-    await set(SAVE_KEY, { ...toSave, lastOnline: Date.now() });
+    const clean = { ...state };
+    STRIP.forEach((k) => delete clean[k]);
+    clean.lastOnline = Date.now();
+    localStorage.setItem(SAVE_KEY, JSON.stringify(clean));
   } catch (err) {
-    console.error('[DB] Save failed:', err);
+    console.error('[Save] failed:', err);
   }
 };
 
-export const loadGame = async () => {
+export const loadGame = () => {
   try {
-    const saved = await get(SAVE_KEY);
-    return saved ?? null;
+    const raw = localStorage.getItem(SAVE_KEY);
+    return raw ? JSON.parse(raw) : null;
   } catch (err) {
-    console.error('[DB] Load failed:', err);
+    console.error('[Load] failed:', err);
     return null;
   }
 };
 
-export const clearGame = async () => {
+export const clearGame = () => {
   try {
-    await del(SAVE_KEY);
+    localStorage.removeItem(SAVE_KEY);
   } catch (err) {
-    console.error('[DB] Clear failed:', err);
+    console.error('[Clear] failed:', err);
   }
 };

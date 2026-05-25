@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useIndexedDB } from './useIndexedDB';
+import { saveGame, loadGame } from '../db/gameDB';
 import {
   getClickValue, getCPS, getCritChance, getUpgradeCost,
   getPrestigeRequirement, getDuiktcoinsEarned, getPrestigeMultiplier,
@@ -12,7 +12,7 @@ import {
 
 // ── Initial state factory ─────────────────────────────────────────────────────
 const buildInitialUpgrades = () =>
-  Object.fromEntries(Object.keys(UPGRADES_CONFIG).map((k) => [k, { level: 0 }]));
+    Object.fromEntries(Object.keys(UPGRADES_CONFIG).map((k) => [k, { level: 0 }]));
 
 const createInitialState = () => ({
   credits: 0,
@@ -36,63 +36,58 @@ const createInitialState = () => ({
 
 // ── Achievement checker (pure) ────────────────────────────────────────────────
 const findNewAchievements = (state, existing) =>
-  ACHIEVEMENTS_CONFIG.filter(
-    (a) => !existing.includes(a.id) && a.condition(state)
-  ).map((a) => a.id);
+    ACHIEVEMENTS_CONFIG.filter(
+        (a) => !existing.includes(a.id) && a.condition(state)
+    ).map((a) => a.id);
 
 // ── Hook ──────────────────────────────────────────────────────────────────────
 export const useClicker = () => {
-  const [state, setState] = useState(createInitialState);
-  const [loaded, setLoaded] = useState(false);
+  // Завантажуємо збереження синхронно ПРИ ІНІЦІАЛІЗАЦІЇ
+  const [state, setState] = useState(() => {
+    const saved = loadGame();
+    if (saved) {
+      const now   = Date.now();
+      const away  = Math.max(0, (now - (saved.lastOnline ?? now)) / 1000);
+      const pm    = getPrestigeMultiplier(saved.duiktcoins ?? 0);
+      const cps   = getCPS(saved.upgrades ?? buildInitialUpgrades(), pm, null);
+      const offline = Math.floor(away * cps * OFFLINE_EFFICIENCY);
+
+      return {
+        ...createInitialState(),
+        ...saved,
+        credits: (saved.credits ?? 0) + offline,
+        totalCreditsEarned: (saved.totalCreditsEarned ?? 0) + offline,
+        lastOnline: now,
+        activeBonus: null,
+        activeAntiBonus: null,
+        notifications: offline > 0
+            ? [{ id: now, message: `⏰ Offline income: +${formatNumber(offline)} credits`, type: 'bonus' }]
+            : [],
+      };
+    }
+    return createInitialState();
+  });
+
+  // Гра тепер завжди "loaded", залишаємо для сумісності з App.jsx
+  const loaded = true;
+
   const stateRef = useRef(state);
   stateRef.current = state;
 
-  const { save, load } = useIndexedDB();
-
-  // ── Load & offline income ──────────────────────────────────────────────────
+  // ── Auto-save ──────────────────────────────────────────────────────────────
+  // Зберігаємо миттєво при кожній зміні, debounce більше не потрібен
   useEffect(() => {
-    load().then((saved) => {
-      if (saved) {
-        const now   = Date.now();
-        const away  = Math.max(0, (now - (saved.lastOnline ?? now)) / 1000);
-        const pm    = getPrestigeMultiplier(saved.duiktcoins ?? 0);
-        const cps   = getCPS(saved.upgrades ?? buildInitialUpgrades(), pm, null);
-        const offline = Math.floor(away * cps * OFFLINE_EFFICIENCY);
-
-        const restored = {
-          ...createInitialState(),
-          ...saved,
-          credits: (saved.credits ?? 0) + offline,
-          totalCreditsEarned: (saved.totalCreditsEarned ?? 0) + offline,
-          lastOnline: now,
-          activeBonus: null,
-          activeAntiBonus: null,
-          notifications: offline > 0
-            ? [{ id: now, message: `⏰ Offline income: +${formatNumber(offline)} credits`, type: 'bonus' }]
-            : [],
-        };
-        setState(restored);
-      }
-      setLoaded(true);
-    });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ── Auto-save (debounced 1s) ───────────────────────────────────────────────
-  const saveTimer = useRef(null);
-  useEffect(() => {
-    if (!loaded) return;
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => save(stateRef.current), 1000);
-  }, [state, loaded, save]);
+    saveGame(state);
+  }, [state]);
 
   // ── Game tick (50ms = 20 fps) ─────────────────────────────────────────────
   useEffect(() => {
-    if (!loaded) return;
     const id = setInterval(() => {
       setState((prev) => {
         const pm  = getPrestigeMultiplier(prev.duiktcoins);
         const cps = getCPS(prev.upgrades, pm, prev.activeAntiBonus);
         if (cps === 0) return prev;
+
         const earned = cps / 20;
         const newTotal = prev.totalCreditsEarned + earned;
         const newState = {
@@ -100,6 +95,7 @@ export const useClicker = () => {
           credits: prev.credits + earned,
           totalCreditsEarned: newTotal,
         };
+
         // Passive skin unlock check
         const skins = checkSkinUnlocks(newState);
         if (skins.length !== prev.unlockedSkins.length) newState.unlockedSkins = skins;
@@ -107,11 +103,10 @@ export const useClicker = () => {
       });
     }, 50);
     return () => clearInterval(id);
-  }, [loaded]);
+  }, []);
 
   // ── Timer-based: expire bonuses / anti-bonuses ────────────────────────────
   useEffect(() => {
-    if (!loaded) return;
     const id = setInterval(() => {
       setState((prev) => {
         const now = Date.now();
@@ -137,11 +132,10 @@ export const useClicker = () => {
       });
     }, 500);
     return () => clearInterval(id);
-  }, [loaded]);
+  }, []);
 
   // ── Random anti-bonus every 30s (15% chance) ──────────────────────────────
   useEffect(() => {
-    if (!loaded) return;
     const id = setInterval(() => {
       setState((prev) => {
         if (prev.activeAntiBonus) return prev;
@@ -161,7 +155,7 @@ export const useClicker = () => {
       });
     }, 30_000);
     return () => clearInterval(id);
-  }, [loaded]);
+  }, []);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   const applyAchievements = (newState) => {

@@ -118,8 +118,8 @@ src/
 ├── db/
 │   └── gameDB.js         # IndexedDB save / load / clear
 ├── hooks/
-│   ├── useClicker.js     # ★ Main game state & logic
-│   └── useIndexedDB.js   # Thin DB hook wrapper
+│   └── useClicker.js     # ★ Main game state & logic
+│    
 ├── styles/
 │   └── global.scss       # CSS variables, reset, keyframe animations
 ├── utils/
