@@ -1,12 +1,12 @@
 # 💎 Duikt Clicker
 
-> A full-featured browser clicker game built with **React + Vite**, featuring upgrades, bonuses, anti-bonuses, prestige, skins, and persistent save via IndexedDB.
+> A full-featured browser clicker game built with **React + Vite**, featuring upgrades, bonuses, anti-bonuses, prestige, skins, and persistent save via localStorage.
 
 ---
 
 ## 🚀 Demo
 
-> _Deploy to Vercel / Netlify and paste the link here._
+> [Play online(GitHub Pages)] - https://yakalex.github.io/duikt-clicker/
 
 ---
 
@@ -116,7 +116,7 @@ src/
 │   ├── UpgradePanel/     # Upgrade cards with progress bars
 │   └── WheelOfFortune/   # SVG spinning wheel modal
 ├── db/
-│   └── gameDB.js         # IndexedDB save / load / clear
+│   └── gameDB.js         # localStorage save / load / clear
 ├── hooks/
 │   └── useClicker.js     # ★ Main game state & logic
 │    
@@ -146,7 +146,15 @@ src/
 | React | 18 |
 | Vite | 5 |
 | SCSS Modules | via `sass` |
-| IndexedDB | `idb-keyval` 6 |
+| Storage | Native localStorage API |
+
+---
+
+## 📸 Screenshots
+
+**Upgrades panel** showcasing multiple progressive enhancements for CPC and CPS.![img_1.png](img_1.png)
+
+**Prestige System** interface showing progression requirements and the Duiktcoin reward formula.![img_2.png](img_2.png)
 
 ---
 
